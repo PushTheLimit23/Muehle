@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mühle</title>
+  <meta name="theme-color" content="#2a1712">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a href="./" class="brand" aria-label="Zur Startseite">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><use href="#logo"/></svg>
+        <span>Mühle</span>
+      </a>
+    </header>
+
+    <!-- Startseite -->
+    <section id="lobby" class="card lobby" hidden>
+      <h1>Mühle spielen</h1>
+      <p class="sub" id="lobbyText">Erstelle ein Spiel und schick den Link an einen Freund.</p>
+      <form id="nameForm" class="row">
+        <label class="sr" for="nameInput">Dein Name</label>
+        <input id="nameInput" maxlength="20" placeholder="Dein Name" autocomplete="nickname" required>
+        <button class="btn primary" id="startBtn" type="submit">Neues Spiel</button>
+      </form>
+      <details class="rules">
+        <summary>Spielregeln in 30 Sekunden</summary>
+        <ol>
+          <li><b>Setzen:</b> Abwechselnd setzt jeder seine 9 Steine auf freie Punkte. Weiß beginnt.</li>
+          <li><b>Ziehen:</b> Danach schiebt man einen Stein entlang einer Linie auf einen freien Nachbarpunkt.</li>
+          <li><b>Springen:</b> Wer nur noch 3 Steine hat, darf auf jeden freien Punkt springen.</li>
+          <li><b>Mühle:</b> Drei eigene Steine in einer Linie – dann nimmst du einen Stein deines Mitspielers. Steine in einer Mühle sind geschützt, außer dein Mitspieler hat nur noch solche.</li>
+          <li><b>Gewonnen</b> hat, wer seinen Mitspieler auf 2 Steine bringt oder so einsperrt, dass er nicht mehr ziehen kann.</li>
+        </ol>
+      </details>
+      <div id="historyBox" class="history" hidden>
+        <h2>Deine letzten Partien</h2>
+        <ul id="historyList"></ul>
+      </div>
+    </section>
+
+    <!-- Spiel -->
+    <section id="game" class="game" hidden>
+      <div class="players">
+        <div class="player" id="p1"><span class="chip white"></span><span class="pname"></span><span class="hand"></span></div>
+        <div class="vs">gegen</div>
+        <div class="player" id="p2"><span class="chip black"></span><span class="pname"></span><span class="hand"></span></div>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+
+      <div class="board-wrap">
+        <svg id="board" viewBox="0 0 700 700" role="img" aria-label="Mühlebrett"></svg>
+        <div id="invite" class="overlay" hidden>
+          <div class="card small">
+            <h2>Warte auf deinen Mitspieler</h2>
+            <p>Schick ihm diesen Link:</p>
+            <div class="linkbox"><code id="linkText"></code></div>
+            <button class="btn primary" id="shareBtn">Link teilen</button>
+          </div>
+        </div>
+        <div id="result" class="overlay" hidden>
+          <div class="card small">
+            <h2 id="resultTitle"></h2>
+            <p id="resultText"></p>
+            <button class="btn primary" id="rematchBtn">Revanche</button>
+            <p class="hint" id="rematchHint"></p>
+            <button class="btn ghost" id="closeResult">Brett ansehen</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost" id="copyBtn">Link kopieren</button>
+        <button class="btn ghost" id="resignBtn">Aufgeben</button>
+        <button class="btn ghost" id="againBtn" hidden>Revanche</button>
+        <a class="btn ghost" href="./">Neues Spiel</a>
+      </div>
+    </section>
+
+    <section id="full" class="card lobby" hidden>
+      <h1>Spiel ist voll</h1>
+      <p class="sub">An diesem Tisch sitzen schon zwei Spieler.</p>
+      <a class="btn primary" href="./">Eigenes Spiel starten</a>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="alert" hidden></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="logo" viewBox="0 0 32 32">
+      <rect x="1" y="1" width="30" height="30" rx="6" fill="#6e2a17"/>
+      <g fill="none" stroke="#e9cf9f" stroke-width="1.6">
+        <rect x="5" y="5" width="22" height="22"/><rect x="10" y="10" width="12" height="12"/>
+        <path d="M16 5v5M16 22v5M5 16h5M22 16h5"/>
+      </g>
+      <circle cx="5" cy="5" r="3.2" fill="#e6d8bb"/><circle cx="16" cy="5" r="3.2" fill="#e6d8bb"/><circle cx="27" cy="5" r="3.2" fill="#e6d8bb"/>
+      <circle cx="22" cy="22" r="3.2" fill="#3a2d26" stroke="#e9cf9f" stroke-width=".6"/>
+    </symbol>
+  </svg>
+
+  <script src="rules.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
