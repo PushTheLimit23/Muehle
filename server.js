@@ -61,7 +61,7 @@ const clean = (s, n) => String(s || '').replace(/[\u0000-\u001f<>]/g, '').trim()
 function getRoom(id) {
   let r = rooms.get(id);
   if (!r) {
-    r = { id, seats: [null, null, null], game: R.newGame(), rematch: new Set(), touched: Date.now(), recorded: false };
+    r = { id, seats: [null, null, null], game: R.newGame(), rematch: new Set(), touched: Date.now(), recorded: false, wins: {}, draws: 0 };
     rooms.set(id, r);
   }
   return r;
@@ -73,9 +73,10 @@ function broadcast(r, extra = {}) {
   const players = [null, 1, 2].map((c) => c && r.seats[c]
     ? { name: r.seats[c].name, online: !!(r.seats[c].ws && r.seats[c].ws.readyState === 1) }
     : null);
+  const score = [0, 1, 2].map((c) => (c && r.seats[c] ? r.wins[r.seats[c].token] || 0 : 0));
   for (const c of [1, 2]) {
     const s = r.seats[c];
-    if (s) send(s.ws, { type: 'state', room: r.id, you: c, players, game: r.game, rematch: [...r.rematch], ...extra });
+    if (s) send(s.ws, { type: 'state', room: r.id, you: c, players, game: r.game, rematch: [...r.rematch], score, draws: r.draws, ...extra });
   }
 }
 
@@ -83,6 +84,8 @@ function recordIfOver(r) {
   const g = r.game;
   if (!g.winner || r.recorded) return;
   r.recorded = true;
+  if (g.winner === -1) r.draws++;
+  else { const t = r.seats[g.winner]?.token; if (t) r.wins[t] = (r.wins[t] || 0) + 1; }
   history.push({
     date: new Date().toISOString(),
     white: r.seats[1]?.name || '?',
