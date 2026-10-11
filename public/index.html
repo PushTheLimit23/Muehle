@@ -49,7 +49,7 @@
     <section id="game" class="game" hidden>
       <div class="players">
         <div class="player" id="p1"><span class="chip white"></span><span class="pname"></span><span class="hand"></span></div>
-        <div class="vs">gegen</div>
+        <div class="vs" id="tally" title="Siege in dieser Runde"><b id="score">0 : 0</b><small id="tallyLabel">Siege</small></div>
         <div class="player" id="p2"><span class="chip black"></span><span class="pname"></span><span class="hand"></span></div>
       </div>
 
@@ -69,6 +69,7 @@
           <div class="card small">
             <h2 id="resultTitle"></h2>
             <p id="resultText"></p>
+            <p class="tally-line" id="resultScore"></p>
             <button class="btn primary" id="rematchBtn">Revanche</button>
             <p class="hint" id="rematchHint"></p>
             <button class="btn ghost" id="closeResult">Brett ansehen</button>

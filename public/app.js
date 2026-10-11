@@ -160,6 +160,7 @@
   // ---------- Spielzustand ----------
   let S = null;          // letzter Server-Zustand
   let prevBoard = null;  // für Animationen
+  const reduceMotion = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; } };
   let selected = -1;
   let resultDismissed = false;
 
@@ -198,8 +199,12 @@
       }
     });
     // gerade geschlagener Stein verschwindet
-    if (prevBoard && g.last?.removed != null && prevBoard[g.last.removed] && !g.board[g.last.removed]) {
-      stone(layer, g.last.removed, prevBoard[g.last.removed], 'ghost-stone');
+    // Nur als kurze Animation – das Element wird danach sicher entfernt.
+    // Bei "Bewegung reduzieren" (iPhone: Bedienungshilfen) gibt es keine Animation, also gar keinen Geist.
+    if (prevBoard && g.last?.removed != null && prevBoard[g.last.removed] && !g.board[g.last.removed] && !reduceMotion()) {
+      const ghost = stone(layer, g.last.removed, prevBoard[g.last.removed], 'ghost-stone');
+      ghost.setAttribute('pointer-events', 'none');
+      setTimeout(() => ghost.remove(), 500);
     }
     // Zielpunkte für gewählten Stein
     if (selected >= 0) {
@@ -221,6 +226,13 @@
       box.classList.toggle('turn', !g.winner && g.turn === c && !!S.players[1] && !!S.players[2]);
       box.classList.toggle('offline', !!pl && !pl.online);
     }
+
+    // Spielstand dieser Runde (seit der ersten Partie über diesen Link)
+    const sc = S.score || [0, 0, 0];
+    const bump = $('score').textContent !== `${sc[1]} : ${sc[2]}`;
+    $('score').textContent = `${sc[1]} : ${sc[2]}`;
+    if (bump && S.game.winner) { $('score').classList.remove('pop'); void $('score').offsetWidth; $('score').classList.add('pop'); }
+    $('tallyLabel').textContent = S.draws ? `Siege · ${S.draws} Remis` : 'Siege';
 
     // Statuszeile
     const oppName = S.players[opp] ? esc(S.players[opp].name) : 'Mitspieler';
@@ -252,6 +264,8 @@
         resign: g.winner === me ? `${S.players[opp]?.name} hat aufgegeben.` : 'Du hast aufgegeben.',
         quiet: '50 Züge ohne Mühle.' }[g.reason] || '';
       $('resultText').textContent = why;
+      const oppN = S.players[opp]?.name || 'Mitspieler';
+      $('resultScore').textContent = `Stand: Du ${sc[me]} : ${sc[opp]} ${oppN}` + (S.draws ? ` · ${S.draws} Remis` : '');
       const iWant = S.rematch.includes(me), theyWant = S.rematch.includes(opp);
       $('rematchBtn').disabled = iWant;
       $('rematchBtn').textContent = iWant ? 'Warte auf Zusage …' : 'Revanche';

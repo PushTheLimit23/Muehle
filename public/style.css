@@ -99,7 +99,12 @@ input:focus { outline: 2px solid var(--brass); outline-offset: 1px; }
 .pname { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
 .pname small { font-weight: 500; color: var(--muted); }
 .hand { font-size: .8rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.vs { color: var(--muted); font-size: .8rem; }
+.vs { display: flex; flex-direction: column; align-items: center; line-height: 1.1; min-width: 56px; }
+.vs b { font-family: Fraunces, Georgia, serif; font-size: 1.35rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.vs small { color: var(--muted); font-size: .68rem; white-space: nowrap; }
+.vs b.pop { animation: pop .5s ease; }
+@keyframes pop { 40% { transform: scale(1.35); color: var(--brass); } }
+.card.small p.tally-line { color: var(--text); font-weight: 600; margin-top: -6px; }
 .chip { width: 18px; height: 18px; border-radius: 50%; flex: none; }
 .chip.white { background: radial-gradient(circle at 35% 30%, #f6efe1, #e6d8bb 50%, #b29b72); box-shadow: 0 0 0 1px #8c7652; }
 .chip.black { background: radial-gradient(circle at 35% 30%, #8f7d70, #4b3d35 50%, #1c1512); box-shadow: 0 0 0 1px #100b09; }
@@ -152,6 +157,8 @@ input:focus { outline: 2px solid var(--brass); outline-offset: 1px; }
 @media (max-width: 420px) {
   .card { padding: 18px; }
   h1 { font-size: 1.7rem; }
-  .player { padding: 6px 8px; gap: 6px; }
-  .hand { font-size: .72rem; }
+  .player { padding: 6px 10px; gap: 0 6px; flex-wrap: wrap; }
+  .hand { font-size: .72rem; order: 3; flex-basis: 100%; padding-left: 24px; }
+  #p2 .hand { padding-left: 0; padding-right: 24px; }
+  .vs { min-width: 48px; }
 }
